@@ -1,28 +1,27 @@
-var http = require('http');
+var express = require('express');
 
-var server = http.createServer(function (req, res) {
-	res.writeHead(200);
-	res.end('Salut tout le monde !');
-});
+var app = express();
 
-server.on('close', function () { // On écoute l'évènement close
-	console.log('Au revoir !');
-})
+app
+	.get('/', function (req, res) {
+		res.setHeader('Content-Type', 'text/plain');
+		res.end('Vous êtes à l\'accueil, que puis-je pour vous ?');
+	})
+	.get('/sous-sol', function (req, res) {
+		res.setHeader('Content-Type', 'text/plain');
+		res.end('Vous êtes dans la cave à vins, ces bouteilles sont à moi !');
+	})
+	.get('/etage/:etagenum/chambre', function (req, res) {
+		res.setHeader('Content-Type', 'text/plain');
+		if (Number(req.params.etagenum) * 0 === 0) {
+			res.end('Vous êtes à la chambre de l\'étage n°' + req.params.etagenum);
+		} else(erreur(req, res))
+	})
+	.use(erreur)
 
-server.listen(8080); // Démarre le serveur
+	.listen(8080);
 
-var markdown = require('markdown').markdown;
-
-console.log(markdown.toHTML('Un paragraphe en **markdown** !'));
-
-var EventEmitter = require('events').EventEmitter;
-
-var jeu = new EventEmitter();
-
-jeu.on('gameover', function (message, complement) {
-	console.log(message + " " + complement);
-});
-
-jeu.emit('gameover', 'Vous avez perdu !', 'gros nul');
-
-server.close(); // Arrête le serveur. Déclenche l'évènement close
+function erreur(req, res, next) {
+	res.setHeader('Content-Type', 'text/plain');
+	res.send(404, 'Page introuvable !');
+};
