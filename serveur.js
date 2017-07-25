@@ -11,6 +11,9 @@ server.on('close', function () { // On écoute l'évènement close
 
 server.listen(8080); // Démarre le serveur
 
+var markdown = require('markdown').markdown;
+
+console.log(markdown.toHTML('Un paragraphe en **markdown** !'));
 
 var EventEmitter = require('events').EventEmitter;
 
